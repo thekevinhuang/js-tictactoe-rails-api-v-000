@@ -122,7 +122,7 @@ function previousGame() {
 
     result.forEach(function(element) {
       var id = element["id"]
-      newGameList += '<p data-id="' + id + '">'+ id + '</p>'
+      newGameList += '<button data-id="' + id + '">'+ id + '</button>'
     })
 
     gameBox.html(newGameList)
