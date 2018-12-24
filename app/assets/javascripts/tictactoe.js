@@ -122,7 +122,7 @@ function previousGame() {
 
     result.forEach(function(element) {
       var id = element["id"]
-      newGameList += '<p data-id="' + id + '">'+ id + '</p><br>'
+      newGameList += '<p data-id="' + id + '">'+ id + '</p>'
     })
 
     gameBox.html(newGameList)
@@ -144,7 +144,7 @@ function loadGame(element) {
   $.get('/games/'+id , function(data) {
     savedBoard = data["data"]["attributes"]["state"]
     fillBoard(savedBoard)
-    
+
   })
   currID = id
   turn = boardFillCount()-1
