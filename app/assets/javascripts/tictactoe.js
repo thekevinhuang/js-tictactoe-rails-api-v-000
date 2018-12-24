@@ -40,6 +40,7 @@ function fillBoard(state){
   for (let i = 0; i<9; i ++){
     board[i].innerHTML = state[i]
   }
+  turn = boardFillCount()
 }
 
 function setMessage(message) {
@@ -122,7 +123,7 @@ function previousGame() {
 
     result.forEach(function(element) {
       var id = element["id"]
-      newGameList += '<p data-id="' + id + '">'+ id + '</p><br>'
+      newGameList += '<button data-id="' + id + '">'+ id + '</button>'
     })
 
     gameBox.html(newGameList)
@@ -144,8 +145,9 @@ function loadGame(element) {
   $.get('/games/'+id , function(data) {
     savedBoard = data["data"]["attributes"]["state"]
     fillBoard(savedBoard)
-    currID = id
+
   })
+  currID = id
 }
 
 function attachListeners() {
