@@ -144,8 +144,10 @@ function loadGame(element) {
   $.get('/games/'+id , function(data) {
     savedBoard = data["data"]["attributes"]["state"]
     fillBoard(savedBoard)
-    currID = id
+    
   })
+  currID = id
+  turn = boardFillCount()-1
 }
 
 function attachListeners() {
