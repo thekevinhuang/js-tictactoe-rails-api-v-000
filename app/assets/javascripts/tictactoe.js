@@ -147,7 +147,7 @@ function loadGame(element) {
 
   })
   currID = id
-  turn = boardFillCount()-1
+  turn = boardFillCount()
 }
 
 function attachListeners() {
