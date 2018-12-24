@@ -15,11 +15,27 @@ function player() {
   }
 }
 
+function boardFillCount() {
+  let totalSpace = 9
+  for (let i= 0; i<9; i++) {
+    if(board[i].innerHTML == "") {
+      totalSpace --
+    }
+  }
+  return totalSpace
+}
+
 function clearBoard() {
   for (let i = 0; i <9 ; i++) {
     board[i].innerHTML = ""
   }
   turn = 0
+}
+
+function fillBoard(state){
+  for (let i = 0; i<9; i ++){
+    board[i].innerHTML = state[i]
+  }
 }
 
 function setMessage(message) {
@@ -58,20 +74,25 @@ function checkHalf(token) {
 }
 
 function doTurn(element) {
-  updateState(element)
-  turn ++
+  if (element.innerHTML == "") {
+    //If a turn can be taken in this spot
+    updateState(element)
+    turn ++
 
-  if(checkWinner()) {
-    clearBoard()
-  }
+    if(checkWinner()) {
+      clearBoard()
+    }
 
-  if (turn ==9) {
-    setMessage("Tie game.")
+    if (boardFillCount() == 9) {
+      setMessage("Tie game.")
+      clearBoard()
+    }
   }
 }
 
 function saveGame() {
-
+  var state = board.toArray().map(element => element.innerHTML)
+  var posting = $.post('/games', state)
 }
 
 function previousGame() {
@@ -79,9 +100,26 @@ function previousGame() {
 }
 
 function attachListeners() {
-  board.each(function(element) {
-    element.click(doTurn(element))
+  board.each(function(index, element) {
+    $(element).on("click", function() {
+      if (!checkWinner()&&boardFillCount() <9){
+        doTurn(this)
+      }
+    })
   })
+
+  clearButton.on("click", function(){
+    clearBoard()
+  })
+
+  saveButton.on("click", function() {
+    saveGame()
+  })
+
+  previousButton.on("click", function() {
+
+  })
+
 }
 
 $(document).ready(function initialize(){
@@ -91,4 +129,3 @@ $(document).ready(function initialize(){
   clearButton = $("button#clear")
   attachListeners()
 })
-
