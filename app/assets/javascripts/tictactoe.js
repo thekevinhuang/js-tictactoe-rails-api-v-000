@@ -5,6 +5,8 @@ let board
 let saveButton
 let clearButton
 let previousButton
+let currID
+let gameBox
 
 function player() {
 // based on turn variable, set the player Icon X or O
@@ -30,9 +32,11 @@ function clearBoard() {
     board[i].innerHTML = ""
   }
   turn = 0
+  currID = 0
 }
 
 function fillBoard(state){
+
   for (let i = 0; i<9; i ++){
     board[i].innerHTML = state[i]
   }
@@ -80,23 +84,68 @@ function doTurn(element) {
     turn ++
 
     if(checkWinner()) {
+      saveGame()
       clearBoard()
     }
 
     if (boardFillCount() == 9) {
       setMessage("Tie game.")
+      saveGame()
       clearBoard()
     }
   }
 }
 
 function saveGame() {
-  var state = board.toArray().map(element => element.innerHTML)
-  var posting = $.post('/games', state)
+  var state = {}
+  state["state"] = board.toArray().map(element => element.innerHTML)
+  if (currID > 0) {
+    state["id"] = currID
+    var posting = $.ajax('/games/'+currID, {
+      type: 'PATCH',
+      data: state
+    })
+  } else {
+    var posting = $.post('/games', state)
+  }
+
+  posting.done(function(data){
+    var game = data
+    currID = game["data"]["id"]
+  })
 }
 
 function previousGame() {
+  var getting = $.get('/games', function(data) {
+    result = data["data"]
+    newGameList = ''
 
+    result.forEach(function(element) {
+      var id = element["id"]
+      newGameList += '<p data-id="' + id + '">'+ id + '</p><br>'
+    })
+
+    gameBox.html(newGameList)
+    //data["data"][i]["attributes"]["state"]
+    var allGames = $('[data-id]').toArray()
+
+    allGames.forEach(function(element) {
+      $(element).on("click", function() {
+        loadGame(this)
+      })
+    })
+  })
+}
+
+function loadGame(element) {
+  //set currID as this ID
+
+  let id = $(element).data("id")
+  $.get('/games/'+id , function(data) {
+    savedBoard = data["data"]["attributes"]["state"]
+    fillBoard(savedBoard)
+    currID = id
+  })
 }
 
 function attachListeners() {
@@ -117,7 +166,7 @@ function attachListeners() {
   })
 
   previousButton.on("click", function() {
-
+    previousGame()
   })
 
 }
@@ -127,5 +176,6 @@ $(document).ready(function initialize(){
   saveButton = $("button#save")
   previousButton = $("button#previous")
   clearButton = $("button#clear")
+  gameBox = $("div#games")
   attachListeners()
 })
