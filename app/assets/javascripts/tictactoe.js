@@ -40,6 +40,7 @@ function fillBoard(state){
   for (let i = 0; i<9; i ++){
     board[i].innerHTML = state[i]
   }
+  turn = boardFillCount()
 }
 
 function setMessage(message) {
@@ -147,7 +148,6 @@ function loadGame(element) {
 
   })
   currID = id
-  turn = boardFillCount()
 }
 
 function attachListeners() {
