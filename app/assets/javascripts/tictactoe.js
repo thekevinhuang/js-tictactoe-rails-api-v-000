@@ -70,14 +70,25 @@ function doTurn(element) {
   }
 }
 
+function saveGame() {
+
+}
+
+function previousGame() {
+
+}
+
+function attachListeners() {
+  board.each(function(element) {
+    element.click(doTurn(element))
+  })
+}
+
 $(document).ready(function initialize(){
   board = $("td")
   saveButton = $("button#save")
   previousButton = $("button#previous")
   clearButton = $("button#clear")
-
+  attachListeners()
 })
-// data boxes on click do turn
-$(document).ready(function attachListeners(){
 
-})
